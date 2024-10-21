@@ -63,7 +63,7 @@ class _LoginFormState extends State<LoginForm> {
                           _rememberMe = value!;
                         });
                       },
-                      activeColor: const Color(0xFF355B3E),
+                      activeColor: const Color(0xFF029664),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -95,16 +95,14 @@ class _LoginFormState extends State<LoginForm> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        context.read<AuthBloc>().add(LoginEvent(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                            ));
-                      }
+                      context.read<AuthBloc>().add(LoginEvent(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                          ));
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: const Color(0xFF355B3E),
+                      backgroundColor: const Color(0xFF029664),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

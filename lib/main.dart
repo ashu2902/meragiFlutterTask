@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Travalizer',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff029664)),
-        useMaterial3: true,
+        useMaterial3: false,
       ),
       home: BlocProvider(
         create: (context) => AuthBloc(AuthController()),

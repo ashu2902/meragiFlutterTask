@@ -12,6 +12,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onLoginEvent(LoginEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
+
+    // Basic form validation
+    if (event.email.isEmpty || event.password.isEmpty) {
+      emit(const AuthFailure('Email and password cannot be empty'));
+      return;
+    }
+
+    // Email format validation
+    final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegExp.hasMatch(event.email)) {
+      emit(const AuthFailure('Invalid email format'));
+      return;
+    }
+
     try {
       final user = await _authController.login(event.email, event.password);
       emit(AuthSuccess(user));

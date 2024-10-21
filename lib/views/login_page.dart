@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -15,22 +13,58 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log(MediaQuery.of(context).size.width.toString());
-
-    log(MediaQuery.of(context).size.height.toString());
-    return Scaffold(
-      body: SafeArea(
-        child: ResponsiveBuilder(
-          builder: (context, sizingInformation) {
-            if (sizingInformation.deviceScreenType ==
-                    DeviceScreenType.desktop ||
-                sizingInformation.deviceScreenType == DeviceScreenType.tablet) {
-              return _buildWideLayout(context);
-            } else {
-              return _buildNarrowLayout(context);
-            }
-          },
-        ),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Welcome, ${state.user.email}!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // TODO: Navigate to home page or dashboard
+        } else if (state is AuthFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Scaffold(
+                body: SafeArea(
+                  child: ResponsiveBuilder(
+                    builder: (context, sizingInformation) {
+                      if (sizingInformation.deviceScreenType ==
+                              DeviceScreenType.desktop ||
+                          sizingInformation.deviceScreenType ==
+                              DeviceScreenType.tablet) {
+                        return _buildWideLayout(context);
+                      } else {
+                        return _buildNarrowLayout(context);
+                      }
+                    },
+                  ),
+                ),
+              ),
+              if (state is AuthLoading)
+                Container(
+                  color: Colors.black54,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Color(0xFF029664)),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -111,13 +145,13 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildLoginContent(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 24),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const AutoSizeText(
+          AutoSizeText(
             'Artificial Intelligence giving you travel recommendations',
             style: TextStyle(
               fontSize: 20,
@@ -126,41 +160,23 @@ class LoginPage extends StatelessWidget {
             ),
             maxLines: 2,
           ),
-          const SizedBox(height: 12),
-          const AutoSizeText(
+          SizedBox(height: 12),
+          AutoSizeText(
             'Welcome Back, Please login to your account',
             style: TextStyle(fontSize: 16, color: Color(0xff58745E)),
             maxLines: 1,
           ),
-          const SizedBox(height: 24),
-          const LoginForm(),
-          const SizedBox(height: 16),
-          const AutoSizeText(
+          SizedBox(height: 24),
+          LoginForm(),
+          SizedBox(height: 16),
+          AutoSizeText(
             'Or, login with',
             textAlign: TextAlign.center,
             style: TextStyle(color: Color(0xff58745E)),
             maxLines: 1,
           ),
-          const SizedBox(height: 8),
-          const SocialLoginButtons(),
-          const SizedBox(height: 16),
-          BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              if (state is AuthLoading) {
-                return const CircularProgressIndicator();
-              } else if (state is AuthFailure) {
-                return AutoSizeText(
-                  state.error,
-                  style: const TextStyle(color: Colors.red),
-                  maxLines: 2,
-                );
-              } else if (state is AuthSuccess) {
-                return AutoSizeText('Welcome, ${state.user.email}!',
-                    maxLines: 1);
-              }
-              return const SizedBox.shrink();
-            },
-          ),
+          SizedBox(height: 8),
+          SocialLoginButtons(),
         ],
       ),
     );
