@@ -43,7 +43,9 @@ class LoginPage extends StatelessWidget {
                       if (sizingInformation.deviceScreenType ==
                               DeviceScreenType.desktop ||
                           sizingInformation.deviceScreenType ==
-                              DeviceScreenType.tablet) {
+                              DeviceScreenType.tablet ||
+                          MediaQuery.of(context).orientation ==
+                              Orientation.landscape) {
                         return _buildWideLayout(context);
                       } else {
                         return _buildNarrowLayout(context);
@@ -70,26 +72,57 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildWideLayout(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: Container(
-            color: const Color(0xffF5DBC4),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/travel_illustration.svg',
-                width: 300,
-                height: 300,
+    return SingleChildScrollView(
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: SvgPicture.asset(
+                          'assets/travalizer_logo.svg',
+                          width: 24,
+                          height: 24,
+                          color: Color(0xff355B3E),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Travalizer',
+                        style: TextStyle(
+                          color: Color(0xFF355B3E),
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  _buildLoginContent(context),
+                ],
               ),
             ),
           ),
-        ),
-        Expanded(
-          flex: 1,
-          child: _buildLoginContent(context),
-        ),
-      ],
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              color: const Color(0xFFF5DBC4),
+              child: SvgPicture.asset(
+                'assets/travel_illustration.svg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
